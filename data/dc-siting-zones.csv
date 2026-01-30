@@ -1,0 +1,11 @@
+zone_id,jurisdiction,state,zone_type,friction_score,current_gw,projected_gw_2030,utility,constraint_notes
+VA-LOU-01,Loudoun County,VA,Overlay_District,85,5.90,6.35,Dominion,Zoning ended 'By-Right' use; 4+ year transmission backlog.
+VA-PWC-01,Prince William Co,VA,Overlay_District,95,2.75,5.15,Dominion,Digital Gateway (2.1GW) overturned by court in Aug 2025.
+MD-FRE-01,Frederick County,MD,Critical_Infra_Zone,60,0.20,1.50,Potomac Ed,Limited to 2600 acres (Adamstown); 1% land cap enforced.
+AZ-MAR-01,Maricopa County,AZ,Industrial_Zone,55,3.44,5.97,APS/SRP,Water priority restrictions; only IND-2/IND-3 zoning allowed.
+OH-COL-01,New Albany,OH,Business_Park,40,1.25,3.00,AEP Ohio,New tariff requires 85% take-or-pay; 'Financial Friction' only.
+GA-ATL-01,Fulton/Douglas,GA,Metro_Cluster,70,0.88,2.99,Georgia Power,Atlanta City Council requiring Special Use permits; 705MW absorbed 2024.
+IL-CHI-01,Cook County,IL,Incentive_Zone,45,1.48,2.00,ComEd,27 active tax-exempt projects; capacity shortfall forecast by 2029.
+WY-EVA-01,Evanston,WY,Hyperscale_Campus,10,0.00,1.20,Rocky Mtn Power,Prometheus Hyperscale project; Carbon-negative branding; High welcome.
+TX-DAL-01,Dallas/Fort Worth,TX,Industrial_Hub,30,1.29,2.91,Oncor (ERCOT),Low reg friction; constraint is purely transmission line build speed.
+OR-MOR-01,Morrow County,OR,Enterprise_Zone,25,1.18,1.50,Umatilla Elec,Hydro-heavy; very welcoming to AWS/Google expansions.

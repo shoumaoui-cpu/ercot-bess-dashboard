@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,46 +9,59 @@
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
+
 <body>
     <!-- Header -->
     <header>
         <div class="header-brand">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
             </svg>
-            <h1>ERCOT BESS Dashboard</h1>
+            <h1>US Grid Strategy Dashboard</h1>
         </div>
         <nav class="nav-tabs">
             <a href="#" class="nav-tab active" data-tab="overview">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 3v18h18"/>
-                    <path d="M18 17V9"/>
-                    <path d="M13 17V5"/>
-                    <path d="M8 17v-3"/>
+                    <path d="M3 3v18h18" />
+                    <path d="M18 17V9" />
+                    <path d="M13 17V5" />
+                    <path d="M8 17v-3" />
                 </svg>
                 Quarterly
             </a>
             <a href="#" class="nav-tab" data-tab="annual">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8" y1="2" x2="8" y2="6"/>
-                    <line x1="3" y1="10" x2="21" y2="10"/>
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
                 Annual
             </a>
             <a href="#" class="nav-tab" data-tab="timeline">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
                 </svg>
                 Timeline
             </a>
+            <a href="#" class="nav-tab" data-tab="ercot-load">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
+                ERCOT Load
+            </a>
             <a href="#" class="nav-tab" data-tab="counties">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="10" r="3"/>
-                    <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/>
+                    <circle cx="12" cy="10" r="3" />
+                    <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z" />
                 </svg>
-                Counties
+                Grid Overview
+            </a>
+            <a href="#" class="nav-tab" data-tab="pricing">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+                Pricing
             </a>
         </nav>
     </header>
@@ -88,13 +102,25 @@
         </div>
     </div>
 
+    <!-- ERCOT Load Year Slider -->
+    <div id="loadSliderContainer" class="time-slider-container" style="display: none;">
+        <div class="slider-header">
+            <span class="slider-label">Year:</span>
+            <span class="slider-value" id="loadSliderValue">All Years</span>
+        </div>
+        <div class="slider-wrapper">
+            <input type="range" id="loadTimeSlider" class="global-slider" min="0" max="5" value="0">
+            <div class="slider-ticks" id="loadSliderTicks"></div>
+        </div>
+    </div>
+
     <!-- Dashboard Content -->
     <div id="dashboardContent" class="app-container" style="display: none;">
         <!-- Sidebar -->
         <aside class="sidebar">
             <h2 class="sidebar-title">BESS Capacity Overview</h2>
             <p class="sidebar-description">Battery Energy Storage System capacity across Texas ERCOT regions.</p>
-            
+
             <!-- Stats Grid -->
             <div class="stats-grid">
                 <div class="stat-card">
@@ -174,7 +200,7 @@
                         <h2>Capacity by Reporting Zone</h2>
                         <div id="zoneChart"></div>
                     </section>
-                    
+
                     <section class="chart-section map-section">
                         <h2>Texas County Capacity Map</h2>
                         <div id="countyMap"></div>
@@ -187,7 +213,7 @@
                         <h2>Top 10 Counties</h2>
                         <div id="countyChart"></div>
                     </section>
-                    
+
                     <section class="chart-section">
                         <h2>Top 10 Entities</h2>
                         <div id="entityChart"></div>
@@ -213,7 +239,7 @@
                         <h2>Annual Capacity by Reporting Zone</h2>
                         <div id="zoneChartAnnual"></div>
                     </section>
-                    
+
                     <section class="chart-section map-section">
                         <h2>Texas County Capacity Map (Annual)</h2>
                         <div id="countyMapAnnual"></div>
@@ -226,7 +252,7 @@
                         <h2>Top 10 Counties (Annual)</h2>
                         <div id="countyChartAnnual"></div>
                     </section>
-                    
+
                     <section class="chart-section">
                         <h2>Top 10 Entities (Annual)</h2>
                         <div id="entityChartAnnual"></div>
@@ -234,16 +260,415 @@
                 </div>
             </div>
 
-            <!-- Tab: Counties (Full Screen Map) -->
-            <div id="tab-counties" class="tab-content fullscreen-tab">
-                <section class="chart-section map-section-fullscreen">
-                    <h2>Texas Counties - BESS Capacity Distribution</h2>
-                    <div id="countyMapLarge"></div>
-                </section>
+            <!-- Tab: ERCOT Load -->
+            <div id="tab-ercot-load" class="tab-content">
+                <!-- Row 1: Zone and Map (Load) -->
+                <div class="chart-row">
+                    <section class="chart-section">
+                        <h2>Annual Load by TSP Region</h2>
+                        <div id="loadZoneChart"></div>
+                    </section>
+
+                    <section class="chart-section map-section">
+                        <h2>Texas County Load Map</h2>
+                        <div id="loadCountyMap"></div>
+                    </section>
+                </div>
+
+                <!-- Row 2: Counties and Substations (Load) -->
+                <div class="chart-row">
+                    <section class="chart-section">
+                        <h2>Top 10 Counties (Load)</h2>
+                        <div id="loadCountyChart"></div>
+                    </section>
+
+                    <section class="chart-section">
+                        <h2>Top 10 Substations (Load)</h2>
+                        <div id="loadSubstationChart"></div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Tab: Pricing -->
+            <div id="tab-pricing" class="tab-content">
+                <!-- Upload Section -->
+                <div class="upload-section">
+                    <div class="upload-container" id="pricingDropZone">
+                        <div class="upload-icon">📊</div>
+                        <h2>Upload ERCOT Pricing Data</h2>
+                        <p>Drag & drop your CSV file here or click to browse</p>
+                        <p class="upload-hint">Supported format: ERCOT Historical DAM/RTM Prices (CSV)</p>
+                        <input type="file" id="pricingFileInput" accept=".csv" style="display: none">
+                        <button class="upload-btn" onclick="document.getElementById('pricingFileInput').click()">Select
+                            File</button>
+                    </div>
+                </div>
+
+                <!-- Pricing Dashboard (Hidden until data loaded) -->
+                <div id="pricingDashboard" style="display: none;">
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Avg LMP (RTM)</div>
+                            <div class="stat-value" id="statAvgLmpRtm">--</div>
+                            <div class="stat-unit">$/MWh</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Max LMP (RTM)</div>
+                            <div class="stat-value orange" id="statMaxLmpRtm">--</div>
+                            <div class="stat-unit">$/MWh</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Avg LMP (DAM)</div>
+                            <div class="stat-value purple" id="statAvgLmpDam">--</div>
+                            <div class="stat-unit">$/MWh</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Price Spikes</div>
+                            <div class="stat-value green" id="statPriceSpikes">--</div>
+                            <div class="stat-unit">Count > $100</div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="chart-row full-width">
+                        <section class="chart-section"
+                            style="flex-direction: row; align-items: center; gap: 1rem; padding: 0.5rem 1rem;">
+                            <div style="flex: 1;">
+                                <label for="settlementPointFilter"
+                                    style="font-size: 0.8rem; color: var(--text-muted); margin-right: 0.5rem;">Settlement
+                                    Point:</label>
+                                <select id="settlementPointFilter" class="region-select"
+                                    style="width: auto; min-width: 200px;">
+                                    <option value="all">All Points</option>
+                                </select>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="chart-row full-width">
+                        <section class="chart-section timeline-section">
+                            <h2>Price Trends (RTM vs DAM)</h2>
+                            <div id="priceTrendChart"></div>
+                        </section>
+                    </div>
+
+                    <div class="chart-row">
+                        <section class="chart-section">
+                            <h2>Price Distribution (RTM)</h2>
+                            <div id="priceDistChart"></div>
+                        </section>
+                        <section class="chart-section">
+                            <h2>Daily Average Price Profile</h2>
+                            <div id="dailyProfileChart"></div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Counties (Full Screen Map with Navigator) -->
+            <div id="tab-counties" class="tab-content counties-navigator-tab">
+                <!-- Left Sidebar Navigator -->
+                <aside class="navigator-sidebar">
+                    <h2 class="navigator-title">Data Navigator</h2>
+                    
+                    <!-- Region Selector -->
+                    <div class="region-selector">
+                        <label for="regionSelect">ISO/RTO Region</label>
+                        <select id="regionSelect">
+                            <option value="USA">🇺🇸 All US Markets</option>
+                            <option value="ERCOT" selected>ERCOT (Texas)</option>
+                            <option value="PJM">PJM (Mid-Atlantic)</option>
+                            <option value="WECC">WECC (Western)</option>
+                            <option value="MISO">MISO (Midwest)</option>
+                            <option value="SPP">SPP (Central)</option>
+                            <option value="SERC">SERC (Southeast)</option>
+                        </select>
+                    </div>
+                    
+                    <!-- G-ZIP Capacity Summary -->
+                    <div class="nav-section capacity-summary">
+                        <div class="nav-section-header" data-section="capacity-summary">
+                            <span>US DC Capacity</span>
+                            <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="nav-section-content" id="capacity-summary-content">
+                            <div class="capacity-stats">
+                                <div class="stat-row">
+                                    <span class="stat-label">Total Counties</span>
+                                    <span class="stat-value" id="statTotalCounties">--</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Current Load</span>
+                                    <span class="stat-value" id="statCurrentGW">-- GW</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Projected 2028</span>
+                                    <span class="stat-value" id="statProjectedGW">-- GW</span>
+                                </div>
+                                <div class="stat-row highlight">
+                                    <span class="stat-label">Sweet Spots (0-20)</span>
+                                    <span class="stat-value green" id="statSweetSpots">--</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Low Friction (21-40)</span>
+                                    <span class="stat-value" id="statLowFriction">--</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">High Friction (61+)</span>
+                                    <span class="stat-value red" id="statHighFriction">--</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Overlay Districts</span>
+                                    <span class="stat-value" id="statOverlays">--</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Opportunity Zones</span>
+                                    <span class="stat-value" id="statOZones">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Collapsible Section: BESS Projects -->
+                    <div class="nav-section">
+                        <div class="nav-section-header" data-section="bess-projects">
+                            <span>BESS Projects</span>
+                            <span class="nav-count" id="bessProjectCount">0</span>
+                            <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="nav-section-content" id="bess-projects-content">
+                            <div class="nav-item layer-filter active" data-layer="solar">
+                                <span class="nav-dot solar"></span>
+                                <span>Solar Co-Location</span>
+                                <input type="checkbox" class="layer-checkbox" data-layer="solar" checked>
+                            </div>
+                            <div class="nav-item layer-filter active" data-layer="standalone">
+                                <span class="nav-dot standalone"></span>
+                                <span>Standalone Storage</span>
+                                <input type="checkbox" class="layer-checkbox" data-layer="standalone" checked>
+                            </div>
+                            <div class="nav-item layer-filter active" data-layer="wind">
+                                <span class="nav-dot wind"></span>
+                                <span>Wind Co-Location</span>
+                                <input type="checkbox" class="layer-checkbox" data-layer="wind" checked>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Section: Large Loads -->
+                    <div class="nav-section">
+                        <div class="nav-section-header" data-section="large-loads">
+                            <span>Large Loads / Data Centers</span>
+                            <span class="nav-count" id="loadCount">0</span>
+                            <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="nav-section-content" id="large-loads-content">
+                            <div class="nav-item layer-filter active" data-layer="loads-2026">
+                                <span class="nav-dot load-2026"></span>
+                                <span>2026 Load</span>
+                                <input type="checkbox" class="layer-checkbox" data-layer="loads-2026" checked>
+                            </div>
+                            <div class="nav-item layer-filter active" data-layer="loads-2028">
+                                <span class="nav-dot load-2028"></span>
+                                <span>2028 Load</span>
+                                <input type="checkbox" class="layer-checkbox" data-layer="loads-2028" checked>
+                            </div>
+                            <div class="nav-item layer-filter active" data-layer="loads-2030">
+                                <span class="nav-dot load-2030"></span>
+                                <span>2030 Load</span>
+                                <input type="checkbox" class="layer-checkbox" data-layer="loads-2030" checked>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Section: Transmission Grid (HIFLD) -->
+                    <div class="nav-section">
+                        <div class="nav-section-header" data-section="transmission">
+                            <span>Transmission Grid</span>
+                            <span class="nav-count" id="transmissionCount">Loading...</span>
+                            <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="nav-section-content" id="transmission-content">
+                            <div class="nav-item voltage-filter active" data-voltage="735 AND ABOVE">
+                                <span class="nav-line v-735"></span>
+                                <span>735+ kV (UHV)</span>
+                                <input type="checkbox" class="voltage-checkbox" data-voltage="735 AND ABOVE" checked>
+                            </div>
+                            <div class="nav-item voltage-filter active" data-voltage="500">
+                                <span class="nav-line v-500"></span>
+                                <span>500 kV (EHV)</span>
+                                <input type="checkbox" class="voltage-checkbox" data-voltage="500" checked>
+                            </div>
+                            <div class="nav-item voltage-filter active" data-voltage="345">
+                                <span class="nav-line v-345"></span>
+                                <span>345 kV</span>
+                                <input type="checkbox" class="voltage-checkbox" data-voltage="345" checked>
+                            </div>
+                            <div class="nav-item voltage-filter active" data-voltage="220-287">
+                                <span class="nav-line v-230"></span>
+                                <span>230 kV</span>
+                                <input type="checkbox" class="voltage-checkbox" data-voltage="220-287" checked>
+                            </div>
+                            <div class="nav-item voltage-filter active" data-voltage="DC">
+                                <span class="nav-line v-dc"></span>
+                                <span>HVDC</span>
+                                <input type="checkbox" class="voltage-checkbox" data-voltage="DC" checked>
+                            </div>
+                            <p class="nav-source">Source: HIFLD (≥230kV only)</p>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Section: ERCOT Zones -->
+                    <div class="nav-section">
+                        <div class="nav-section-header" data-section="ercot-zones">
+                            <span>ERCOT Zones</span>
+                            <span class="nav-count">6</span>
+                            <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="nav-section-content collapsed" id="ercot-zones-content">
+                            <div class="nav-item" data-zone="SOUTH"><span class="nav-dot zone-south"></span><span>South</span></div>
+                            <div class="nav-item" data-zone="WEST"><span class="nav-dot zone-west"></span><span>West</span></div>
+                            <div class="nav-item" data-zone="COASTAL"><span class="nav-dot zone-coastal"></span><span>Coastal</span></div>
+                            <div class="nav-item" data-zone="NORTH"><span class="nav-dot zone-north"></span><span>North</span></div>
+                            <div class="nav-item" data-zone="PANHANDLE"><span class="nav-dot zone-panhandle"></span><span>Panhandle</span></div>
+                            <div class="nav-item" data-zone="HOUSTON"><span class="nav-dot zone-houston"></span><span>Houston</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Map Controls -->
+                    <div class="nav-section">
+                        <div class="nav-section-header" data-section="map-controls">
+                            <span>Map Controls</span>
+                            <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="nav-section-content" id="map-controls-content">
+                            <div class="control-item">
+                                <label>Show BESS</label>
+                                <input type="checkbox" id="showBessLayer" checked>
+                            </div>
+                            <div class="control-item">
+                                <label>Show Loads</label>
+                                <input type="checkbox" id="showLoadsLayer" checked>
+                            </div>
+                            <div class="control-item">
+                                <label>Show Transmission</label>
+                                <input type="checkbox" id="showTransmissionLayer" checked>
+                            </div>
+                            <div class="control-item">
+                                <label>Size by Capacity</label>
+                                <input type="checkbox" id="sizeByCapacity" checked>
+                            </div>
+                            <div class="control-item">
+                                <label>Show Econ Zones</label>
+                                <input type="checkbox" id="showZonesLayer" checked>
+                            </div>
+                            <div class="control-item">
+                                <label>Show Friction</label>
+                                <input type="checkbox" id="showFrictionLayer" checked>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- G-ZIP: Friction Score Legend -->
+                    <div class="nav-section">
+                        <div class="nav-section-header" data-section="friction-legend">
+                            <span>Friction Score</span>
+                            <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="nav-section-content" id="friction-legend-content">
+                            <div class="friction-scale">
+                                <div class="friction-item"><span class="friction-dot sweet-spot"></span><span>0-20: Sweet Spot</span></div>
+                                <div class="friction-item"><span class="friction-dot low"></span><span>21-40: Low Friction</span></div>
+                                <div class="friction-item"><span class="friction-dot moderate"></span><span>41-60: Moderate</span></div>
+                                <div class="friction-item"><span class="friction-dot high"></span><span>61-80: High Friction</span></div>
+                                <div class="friction-item"><span class="friction-dot unbuildable"></span><span>81-100: Unbuildable</span></div>
+                            </div>
+                            <p class="nav-source">Based on Zoning, Sentiment, Tax</p>
+                        </div>
+                    </div>
+                    
+                    <!-- G-ZIP: Economic Zones -->
+                    <div class="nav-section">
+                        <div class="nav-section-header" data-section="econ-zones">
+                            <span>Economic Zones</span>
+                            <span class="nav-count" id="econZoneCount">8</span>
+                            <svg class="nav-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </div>
+                        <div class="nav-section-content" id="econ-zones-content">
+                            <div class="nav-item"><span class="nav-dot oz"></span><span>Opportunity Zones (5)</span></div>
+                            <div class="nav-item"><span class="nav-dot overlay"></span><span>DC Overlay Districts (3)</span></div>
+                            <p class="nav-source">MVP Markets: VA, MD</p>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Map Area -->
+                <div class="map-container-full">
+                    <div class="map-search-bar">
+                        <input type="text" id="mapSearchInput" placeholder="Ask anything about this area..." />
+                        <button class="map-search-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="M21 21l-4.35-4.35"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="scatterMapLarge"></div>
+                </div>
+
+                <!-- Right Info Panel -->
+                <aside class="info-panel" id="mapInfoPanel" style="display: none;">
+                    <button class="info-panel-close" id="closeInfoPanel">&times;</button>
+                    <h3 class="info-panel-title" id="infoPanelTitle">Select a point</h3>
+                    <div class="info-panel-subtitle" id="infoPanelSubtitle"></div>
+                    
+                    <div class="info-panel-stats">
+                        <div class="info-stat">
+                            <span class="info-stat-label">Capacity</span>
+                            <span class="info-stat-value" id="infoPanelCapacity">--</span>
+                        </div>
+                        <div class="info-stat">
+                            <span class="info-stat-label">Type</span>
+                            <span class="info-stat-value" id="infoPanelType">--</span>
+                        </div>
+                        <div class="info-stat">
+                            <span class="info-stat-label">Zone</span>
+                            <span class="info-stat-value" id="infoPanelZone">--</span>
+                        </div>
+                    </div>
+
+                    <div class="info-panel-section">
+                        <h4>Related Projects</h4>
+                        <div id="relatedProjectsList" class="related-list">
+                            <p class="no-data">No projects found</p>
+                        </div>
+                    </div>
+                </aside>
             </div>
         </main>
     </div>
-    
+
+    <script src="data/large-loads-us.js"></script>
     <script src="script.js"></script>
+    <script src="pricing.js"></script>
 </body>
+
 </html>

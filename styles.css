@@ -740,8 +740,19 @@ header h1 {
     width: 100%;
 }
 
-#countyMapAnnual {
+#countyMapAnnual, #loadCountyMap {
     height: 280px;
+    width: 100%;
+}
+
+#loadZoneChart {
+    height: 280px;
+    width: 100%;
+}
+
+#loadCountyChart, #loadSubstationChart {
+    height: 400px !important;
+    min-height: 400px !important;
     width: 100%;
 }
 
@@ -961,4 +972,485 @@ header h1 {
 
 .js-plotly-plot .plotly .modebar-btn:hover {
     color: var(--text-primary) !important;
+}
+
+/* ==================== Counties Navigator Tab ==================== */
+.counties-navigator-tab {
+    display: none;
+    height: calc(100vh - 120px);
+    position: relative;
+}
+
+.counties-navigator-tab.active {
+    display: flex !important;
+}
+
+/* Navigator Sidebar */
+.navigator-sidebar {
+    width: 360px;
+    min-width: 360px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.navigator-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    margin: 0;
+}
+
+.region-selector {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(88, 166, 255, 0.05);
+}
+
+.region-selector label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.region-selector select {
+    width: 100%;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.region-selector select:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+/* Nav Sections */
+.nav-section {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-section-header {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    gap: 0.5rem;
+}
+
+.nav-section-header:hover {
+    background: var(--bg-tertiary);
+}
+
+.nav-section-header span:first-child {
+    flex: 1;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.nav-count {
+    background: var(--accent-blue);
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: 0.5rem;
+    transition: background 0.2s, opacity 0.2s;
+}
+
+.nav-count.na {
+    background: var(--text-muted);
+    opacity: 0.5;
+}
+
+/* G-ZIP Friction Score Legend */
+.friction-scale {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.friction-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.friction-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.friction-dot.sweet-spot { background: rgb(34, 197, 94); }
+.friction-dot.low { background: rgb(132, 204, 22); }
+.friction-dot.moderate { background: rgb(250, 204, 21); }
+.friction-dot.high { background: rgb(249, 115, 22); }
+.friction-dot.unbuildable { background: rgb(239, 68, 68); }
+
+/* Economic Zones Legend */
+.nav-dot.oz {
+    background: rgba(59, 130, 246, 0.6);
+    border: 2px solid rgba(59, 130, 246, 1);
+}
+
+.nav-dot.overlay {
+    background: rgba(16, 185, 129, 0.6);
+    border: 2px solid rgba(16, 185, 129, 1);
+}
+
+/* G-ZIP Capacity Summary */
+.capacity-summary {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.capacity-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.stat-row.highlight {
+    background: rgba(34, 197, 94, 0.1);
+    margin: 0.25rem -0.5rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 4px;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.stat-value.green {
+    color: rgb(34, 197, 94);
+}
+
+.stat-value.red {
+    color: rgb(239, 68, 68);
+}
+
+.nav-arrow {
+    width: 16px;
+    height: 16px;
+    color: var(--text-secondary);
+    transition: transform 0.2s;
+}
+
+.nav-section-header.collapsed .nav-arrow {
+    transform: rotate(-90deg);
+}
+
+.nav-section-content {
+    padding: 0.5rem 0;
+    background: var(--bg-primary);
+}
+
+.nav-section-content.collapsed {
+    display: none;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem 0.5rem 1.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.nav-item:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.nav-item.active {
+    background: rgba(88, 166, 255, 0.1);
+    color: var(--accent-blue);
+}
+
+.nav-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.nav-dot.solar { background: #58a6ff; }
+.nav-dot.standalone { background: #3fb950; }
+.nav-dot.wind { background: #d29922; }
+.nav-dot.load-2026 { background: #a371f7; }
+.nav-dot.load-2028 { background: #f778ba; }
+.nav-dot.load-2030 { background: #ff7b72; }
+.nav-dot.zone-south { background: #58a6ff; }
+.nav-dot.zone-west { background: #3fb950; }
+.nav-dot.zone-coastal { background: #d29922; }
+.nav-dot.zone-north { background: #a371f7; }
+.nav-dot.zone-panhandle { background: #39c5cf; }
+.nav-dot.zone-houston { background: #f85149; }
+
+/* Voltage legend lines */
+.nav-line {
+    width: 24px;
+    height: 3px;
+    border-radius: 1px;
+    flex-shrink: 0;
+}
+
+/* G-ZIP PRD spec: 230kV=Yellow, 345kV=Orange, 500kV+=Red */
+.nav-line.v-735 { background: rgba(255, 30, 30, 0.95); height: 5px; }
+.nav-line.v-500 { background: rgba(255, 60, 30, 0.9); height: 4px; }
+.nav-line.v-345 { background: rgba(255, 140, 0, 0.85); height: 3px; }
+.nav-line.v-230 { background: rgba(255, 220, 50, 0.8); height: 2.5px; }
+.nav-line.v-dc { background: rgba(0, 200, 255, 0.85); height: 4px; }
+
+.voltage-filter,
+.layer-filter {
+    cursor: pointer;
+    justify-content: flex-start;
+    opacity: 1;
+    transition: opacity 0.2s, background 0.2s;
+}
+
+.voltage-filter:not(.active),
+.layer-filter:not(.active) {
+    opacity: 0.4;
+}
+
+.voltage-filter:not(.active) .nav-line,
+.layer-filter:not(.active) .nav-dot {
+    opacity: 0.3;
+}
+
+.voltage-checkbox,
+.layer-checkbox {
+    margin-left: auto;
+    width: 14px;
+    height: 14px;
+    accent-color: var(--accent-blue);
+    cursor: pointer;
+}
+
+.nav-source {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    padding: 0.5rem 1rem 0.5rem 1.5rem;
+    margin: 0;
+    font-style: italic;
+}
+
+/* Control Items */
+.control-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem 0.5rem 1.5rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.control-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent-blue);
+}
+
+/* Map Container */
+.map-container-full {
+    flex: 1;
+    position: relative;
+    background: #0d1117;
+    overflow: hidden;
+}
+
+.map-search-bar {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 100;
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(22, 27, 34, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.map-search-bar input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    width: 250px;
+    outline: none;
+}
+
+.map-search-bar input::placeholder {
+    color: var(--text-muted);
+}
+
+.map-search-btn {
+    background: var(--accent-blue);
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-search-btn svg {
+    width: 16px;
+    height: 16px;
+    color: white;
+}
+
+#scatterMapLarge {
+    width: 100%;
+    height: 100%;
+}
+
+/* Info Panel */
+.info-panel {
+    width: 300px;
+    min-width: 300px;
+    background: rgba(22, 27, 34, 0.95);
+    border-left: 1px solid var(--border-color);
+    padding: 1rem;
+    overflow-y: auto;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+.info-panel-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.info-panel-close:hover {
+    color: var(--text-primary);
+}
+
+.info-panel-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 0.25rem;
+    padding-right: 2rem;
+}
+
+.info-panel-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.info-panel-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.info-stat-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent-green);
+}
+
+.info-panel-section {
+    margin-top: 1rem;
+}
+
+.info-panel-section h4 {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    margin: 0 0 0.75rem;
+}
+
+.related-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.related-list .no-data {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.related-item {
+    background: var(--bg-tertiary);
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.related-item:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
 }
